@@ -1,0 +1,49 @@
+name: Convert Excel to JSON
+
+on:
+  push:
+    paths:
+      - 'Data base for Dashboard .xlsx'
+    branches:
+      - main
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      
+      - name: Install XLSX
+        run: npm install xlsx
+      
+      - name: Convert Excel to JSON
+        run: |
+          node -e "
+          const XLSX = require('xlsx');
+          const fs = require('fs');
+          
+          const wb = XLSX.readFile('Data base for Dashboard .xlsx');
+          const data = {};
+          
+          wb.SheetNames.forEach(sheetName => {
+            data[sheetName] = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
+          });
+          
+          fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
+          console.log('✅ Excel converted to data.json');
+          "
+      
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data.json
+          git commit -m "Auto-update: Excel to JSON conversion" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
