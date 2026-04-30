@@ -3,59 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css"> <!-- Assuming the ANABEEB brand styling is in style.css -->
-    <title>CRP Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>ANABEEB - CRP Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #F4F6FA;
+            color: #1B2A3F;
+        }
+        header {
+            background: linear-gradient(120deg, #1E3F8B 0%, #16306E 55%, #2E5BB8 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 14px rgba(30,63,139,0.22);
+        }
+        header h1 { font-size: 28px; margin-bottom: 10px; }
+        nav { margin-top: 15px; }
+        nav ul { list-style: none; display: flex; gap: 30px; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; font-weight: 600; transition: 0.3s; }
+        nav a:hover { opacity: 0.8; }
+        main { max-width: 1600px; margin: 0 auto; padding: 30px 20px; }
+        section { display: none; }
+        section.active { display: block; animation: fade 0.3s ease; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        iframe {
+            width: 100%;
+            height: 2000px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        footer {
+            background: white;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #E1E6EE;
+            margin-top: 40px;
+            color: #5A6B82;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #5A6B82;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <div id="tabs">
-        <button onclick="showTab('overview')">Overview</button>
-        <button onclick="showTab('allocation')">Allocation</button>
-        <button onclick="showTab('demand')">Demand</button>
-        <button onclick="showTab('risk')">Risk</button>
-        <button onclick="showTab('projects')">Projects</button>
-    </div>
+    <header>
+        <h1>🏢 ANABEEB Department Performance Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showSection('overview'); return false;">📊 Overview</a></li>
+                <li><a href="#" onclick="showSection('allocation'); return false;">👥 Allocation</a></li>
+                <li><a href="#" onclick="showSection('demand'); return false;">📈 Demand</a></li>
+                <li><a href="#" onclick="showSection('risk'); return false;">⚠️ Risk</a></li>
+                <li><a href="#" onclick="showSection('projects'); return false;">🚀 Projects</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <div id="content">
-        <div id="overview" class="tab-content"></div>
-        <div id="allocation" class="tab-content" style="display:none;"></div>
-        <div id="demand" class="tab-content" style="display:none;"></div>
-        <div id="risk" class="tab-content" style="display:none;"></div>
-        <div id="projects" class="tab-content" style="display:none;"></div>
-    </div>
+    <main>
+        <section id="overview" class="active">
+            <div class="loading">Loading Dashboard...</div>
+            <iframe id="dashboardFrame" src="Department_Dashboard.html" title="Department Performance Dashboard"></iframe>
+        </section>
+
+        <section id="allocation">
+            <h2>Manpower Allocation & Utilization</h2>
+            <div class="loading">This content is displayed in the Overview tab. Please click Overview to view all dashboard sections.</div>
+        </section>
+
+        <section id="demand">
+            <h2>Demand vs Supply Gap Analysis</h2>
+            <div class="loading">This content is displayed in the Overview tab. Please click Overview to view all dashboard sections.</div>
+        </section>
+
+        <section id="risk">
+            <h2>Risk & Overlap Monitoring</h2>
+            <div class="loading">This content is displayed in the Overview tab. Please click Overview to view all dashboard sections.</div>
+        </section>
+
+        <section id="projects">
+            <h2>Project Pipeline</h2>
+            <div class="loading">This content is displayed in the Overview tab. Please click Overview to view all dashboard sections.</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🔄 Dashboard Status: Active • Last updated: <span id="lastUpdate">Loading...</span></p>
+        <p>ANABEEB Department Performance Dashboard • Operational & Strategic Overview</p>
+    </footer>
 
     <script>
-        function fetchData() {
-            fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                // Update the content dynamically using the fetched data
-                updateContent(data);
-            })
-            .catch(error => console.error('Error fetching data:', error));
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function updateContent(data) {
-            // Sample implementation: you would need to customize this according to your data structure
-            document.getElementById('overview').innerHTML = `<h2>Overview</h2><p>${data.overview}</p>`;
-            // Add logic for other tabs using data
+        function updateTimestamp() {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
         }
 
-        function showTab(tabName) {
-            // Hide all tab contents
-            var contents = document.getElementsByClassName('tab-content');
-            for (var i = 0; i < contents.length; i++) {
-                contents[i].style.display = 'none';
-            }
-            // Show current tab
-            document.getElementById(tabName).style.display = 'block';
-        }
-
-        // Auto-refresh every 5 minutes
-        setInterval(fetchData, 5 * 60 * 1000);
-
-        // Initial fetch
-        window.onload = fetchData; 
+        updateTimestamp();
+        setInterval(updateTimestamp, 60000);
+        
+        console.log('✅ CRP Dashboard loaded successfully');
     </script>
 </body>
 </html>
