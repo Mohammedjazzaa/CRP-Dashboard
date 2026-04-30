@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"> <!-- Assuming the ANABEEB brand styling is in style.css -->
+    <title>CRP Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="tabs">
+        <button onclick="showTab('overview')">Overview</button>
+        <button onclick="showTab('allocation')">Allocation</button>
+        <button onclick="showTab('demand')">Demand</button>
+        <button onclick="showTab('risk')">Risk</button>
+        <button onclick="showTab('projects')">Projects</button>
+    </div>
+
+    <div id="content">
+        <div id="overview" class="tab-content"></div>
+        <div id="allocation" class="tab-content" style="display:none;"></div>
+        <div id="demand" class="tab-content" style="display:none;"></div>
+        <div id="risk" class="tab-content" style="display:none;"></div>
+        <div id="projects" class="tab-content" style="display:none;"></div>
+    </div>
+
+    <script>
+        function fetchData() {
+            fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Update the content dynamically using the fetched data
+                updateContent(data);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function updateContent(data) {
+            // Sample implementation: you would need to customize this according to your data structure
+            document.getElementById('overview').innerHTML = `<h2>Overview</h2><p>${data.overview}</p>`;
+            // Add logic for other tabs using data
+        }
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            var contents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].style.display = 'none';
+            }
+            // Show current tab
+            document.getElementById(tabName).style.display = 'block';
+        }
+
+        // Auto-refresh every 5 minutes
+        setInterval(fetchData, 5 * 60 * 1000);
+
+        // Initial fetch
+        window.onload = fetchData; 
+    </script>
+</body>
+</html>
